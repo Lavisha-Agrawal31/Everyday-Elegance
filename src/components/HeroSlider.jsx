@@ -3,19 +3,17 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import offer1 from '../assets/offer1.png';
-import offer2 from '../assets/offer2.png';
-import offer3 from '../assets/offer3.png';
-import offer4 from '../assets/offer4.png';
-
+import { useEffect, useState } from "react";
 
 const HeroSlider = () => {
-  const images = [
-    offer1,
-    offer2,
-    offer3,
-    offer4,
-  ];
+  const [slides, setSlides] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:1337/api/hero-sliders?populate=*") // Adjust URL as per your setup
+      .then(response => response.json())
+      .then(data => setSlides(data.data))
+      .catch(error => console.error("Error fetching slides:", error));
+  }, []);
 
   return (
     <div className="relative w-full py-6 flex justify-center items-center">
@@ -26,14 +24,14 @@ const HeroSlider = () => {
         navigation
         pagination={{ clickable: true }}
         autoplay={{ delay: 5000, disableOnInteraction: false }}
-        loop={true}
+        loop={slides.length > 1} // Enable loop only if more than 1 slide
         className="h-full w-full"
       >
-        {images.map((image, index) => (
+        {slides.map((slide, index) => (
           <SwiperSlide key={index} className="flex justify-center items-center">
             <img
-              src={image}
-              alt={`Slide ${index}`}
+              src={`http://localhost:1337${slide.image.url}`}
+              alt={slide.title || `Slide ${index}`}
               className="w-[93.5%] max-h-[450px] object-cover rounded-lg shadow-lg"
             />
           </SwiperSlide>

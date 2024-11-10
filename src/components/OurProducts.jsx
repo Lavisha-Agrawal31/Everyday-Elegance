@@ -11,9 +11,9 @@ const productsByCategory = {
     { id: 1, name: 'Eto V Neck Yellow', price: 'Rp. 129.000', image: img1 },
     { id: 2, name: 'Wave Stripe Hally', price: 'Rp. 130.000', image: img2 },
     { id: 3, name: 'Floral Waffle Tee', price: 'Rp. 119.000', image: img3 },
-    { id: 1, name: 'Eto V Neck Yellow', price: 'Rp. 129.000', image: img1 },
-    { id: 2, name: 'Wave Stripe Hally', price: 'Rp. 130.000', image: img2 },
-    { id: 3, name: 'Floral Waffle Tee', price: 'Rp. 119.000', image: img3 },
+    { id: 4, name: 'Eto V Neck Yellow', price: 'Rp. 129.000', image: img1 },
+    { id: 5, name: 'Wave Stripe Hally', price: 'Rp. 130.000', image: img2 },
+    { id: 6, name: 'Floral Waffle Tee', price: 'Rp. 119.000', image: img3 },
   ],
   Bottom: [
     { id: 4, name: 'Denim Straight Jeans', price: 'Rp. 259.000', image: '/placeholder.svg?height=300&width=300' },

@@ -1,62 +1,51 @@
-import { useState } from "react"
-import { ArrowLeft, ChevronDown, ChevronUp, Trash2 } from "lucide-react"
+import { ArrowLeft, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
+import { useCart } from "./CartContext";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function Cart() {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Italy Pizza",
-      description: "Extra cheese and toping",
-      price: 681,
-      quantity: 1,
-      image: "https://via.placeholder.com/80"
-    },
-    {
-      id: 2,
-      name: "Combo Plate",
-      description: "Extra cheese and toping",
-      price: 681,
-      quantity: 1,
-      image: "https://via.placeholder.com/80"
-    },
-    {
-      id: 3,
-      name: "Spanish Rice",
-      description: "Extra garlic",
-      price: 681,
-      quantity: 1,
-      image: "https://via.placeholder.com/80"
-    }
-  ])
+  const { cartItems, updateQuantity, removeItem, clearCart } = useCart();
+  const navigate = useNavigate();
 
-  const updateQuantity = (id, increment) => {
-    setCartItems(items =>
-      items.map(item =>
-        item.id === id
-          ? { ...item, quantity: increment ? item.quantity + 1 : Math.max(1, item.quantity - 1) }
-          : item
-      )
-    )
-  }
+  // State for shipping information
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zip, setZip] = useState("");
+  const [country, setCountry] = useState("");
 
-  const removeItem = (id) => {
-    setCartItems(items => items.filter(item => item.id !== id))
-  }
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const shipping = 4;
+  const total = subtotal + shipping;
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const shipping = 4
-  const total = subtotal + shipping
+  // Handle checkout
+  const handleCheckout = () => {
+    const orderDetails = {
+      cartItems,
+      subtotal,
+      shipping,
+      total,
+      shippingAddress: { name, address, city, state, zip, country },
+    };
+    
+    console.log("Order Details:", orderDetails);
+    
+    // Navigate to Thank You page
+    clearCart();
+    navigate("/thank-you");
+  };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-12">
       <div className="mb-6 flex items-center gap-2">
-        <ArrowLeft className="h-6 w-6" />
+        <ArrowLeft className="h-6 w-6 cursor-pointer" onClick={() => navigate("/")} />
         <h1 className="text-2xl font-bold">Shopping Continue</h1>
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
         <div>
           <h2 className="mb-2 text-xl font-semibold">Shopping cart</h2>
-          <p className="mb-4 text-gray-600">You have {cartItems.length} item in your cart</p>
+          <p className="mb-4 text-gray-600">You have {cartItems.length} item(s) in your cart</p>
           <div className="space-y-4">
             {cartItems.map(item => (
               <div
@@ -65,7 +54,7 @@ function Cart() {
               >
                 <div className="flex items-center gap-4">
                   <img
-                    src={item.image}
+                    src={`http://localhost:1337/${item.image}`}
                     alt={item.name}
                     className="h-20 w-20 rounded-lg object-cover"
                   />
@@ -104,82 +93,82 @@ function Cart() {
             ))}
           </div>
         </div>
-        <div className="rounded-lg bg-black p-6 text-white">
+        <div className="rounded-lg bg-zinc-900 p-6 text-white">
           <h2 className="mb-4 text-xl font-semibold">Shipping Address</h2>
           <div className="space-y-4">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium">
-                Full Name
-              </label>
+              <label htmlFor="name" className="block text-sm font-medium">Full Name</label>
               <input
                 id="name"
                 type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 placeholder="Enter your full name"
-                className="mt-1 w-full rounded-md border-gray-300 bg-indigo-500 bg-opacity-50 p-2 placeholder-indigo-200"
+                className="mt-1 w-full rounded-md border-gray-300 bg-zinc-600 bg-opacity-50 p-2 placeholder-white"
               />
             </div>
             <div>
-              <label htmlFor="address" className="block text-sm font-medium">
-                Street Address
-              </label>
+              <label htmlFor="address" className="block text-sm font-medium">Street Address</label>
               <input
                 id="address"
                 type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
                 placeholder="Enter your street address"
-                className="mt-1 w-full rounded-md border-gray-300 bg-indigo-500 bg-opacity-50 p-2 placeholder-indigo-200"
+                className="mt-1 w-full rounded-md border-gray-300 bg-zinc-600 bg-opacity-50 p-2 placeholder-white"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="city" className="block text-sm font-medium">
-                  City
-                </label>
+                <label htmlFor="city" className="block text-sm font-medium">City</label>
                 <input
                   id="city"
                   type="text"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
                   placeholder="City"
-                  className="mt-1 w-full rounded-md border-gray-300 bg-indigo-500 bg-opacity-50 p-2 placeholder-indigo-200"
+                  className="mt-1 w-full rounded-md border-gray-300 bg-zinc-600 bg-opacity-50 p-2 placeholder-white"
                 />
               </div>
               <div>
-                <label htmlFor="state" className="block text-sm font-medium">
-                  State
-                </label>
+                <label htmlFor="state" className="block text-sm font-medium">State</label>
                 <select
                   id="state"
-                  className="mt-1 w-full rounded-md border-gray-300 bg-indigo-500 bg-opacity-50 p-2"
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                  className="mt-1 w-full rounded-md border-gray-300 bg-zinc-700 p-2"
                 >
                   <option value="">Select state</option>
-                  <option value="ny">New York</option>
-                  <option value="ca">California</option>
-                  <option value="tx">Texas</option>
+                  <option value="pb">Punjab</option>
+                  <option value="mp">Madhya Pradesh</option>
+                  <option value="ndls">New Delhi</option>
                 </select>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="zip" className="block text-sm font-medium">
-                  ZIP Code
-                </label>
+                <label htmlFor="zip" className="block text-sm font-medium">ZIP Code</label>
                 <input
                   id="zip"
                   type="text"
+                  value={zip}
+                  onChange={(e) => setZip(e.target.value)}
                   placeholder="ZIP Code"
-                  className="mt-1 w-full rounded-md border-gray-300 bg-indigo-500 bg-opacity-50 p-2 placeholder-indigo-200"
+                  className="mt-1 w-full rounded-md border-gray-300 bg-zinc-600 bg-opacity-50 p-2 placeholder-white"
                 />
               </div>
               <div>
-                <label htmlFor="country" className="block text-sm font-medium">
-                  Country
-                </label>
+                <label htmlFor="country" className="block text-sm font-medium">Country</label>
                 <select
                   id="country"
-                  className="mt-1 w-full rounded-md border-gray-300 bg-indigo-500 bg-opacity-50 p-2"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  className="mt-1 w-full rounded-md border-gray-300 bg-zinc-700 p-2"
                 >
                   <option value="">Select country</option>
-                  <option value="us">United States</option>
-                  <option value="ca">Canada</option>
-                  <option value="mx">Mexico</option>
+                  <option value="in">India</option>
+                  {/* <option value="ca">Canada</option>
+                  <option value="mx">Mexico</option> */}
                 </select>
               </div>
             </div>
@@ -197,7 +186,7 @@ function Cart() {
                 <span>${total}</span>
               </div>
             </div>
-            <button className="mt-6 w-full rounded-md bg-white p-2 text-indigo-600 hover:bg-indigo-100">
+            <button onClick={handleCheckout} className="mt-6 w-full rounded-md bg-white p-2 text-gray-900 hover:bg-gray-300">
               <span className="mr-2">${total}</span>
               <span>Checkout</span>
             </button>
@@ -205,7 +194,7 @@ function Cart() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default Cart;

@@ -1,8 +1,8 @@
-export default function ProductCard({ name, price, image }) {
+export default function ProductCard({ name, price, image, onClick }) {
   return (
-    <div className="flex-none w-64">
+    <div className="flex-none w-64 cursor-pointer" onClick={onClick}>
       <img 
-        src={image} 
+        src={`http://localhost:1337${image}`}
         alt={name}
         className="w-full h-80 object-cover mb-2 rounded-sm"
       />

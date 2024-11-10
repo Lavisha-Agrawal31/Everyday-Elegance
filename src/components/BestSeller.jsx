@@ -1,29 +1,38 @@
 import { useRef, useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import ProductCard from './ProductCard';
-import img1 from '../assets/img1.png';
-import img2 from '../assets/img2.png';
-import img3 from '../assets/img3.png';
-
-const products = [
-  { id: 1, name: 'Euphoria Crop Blouse', price: 'Rp. 125.000', image: img1 },
-  { id: 2, name: 'Venus Halter Dress', price: 'Rp. 180.000', image: img2 },
-  { id: 3, name: 'Snap Pure Blouse', price: 'Rp. 129.000', image: img3 },
-  { id: 4, name: 'Summer Breeze Top', price: 'Rp. 135.000', image: img1 },
-  { id: 5, name: 'Coastal Charm Dress', price: 'Rp. 195.000', image: img3 },
-  { id: 6, name: 'Charm Dress', price: 'Rp. 195.000', image: img2 },
-  { id: 7, name: 'Coastal Dress', price: 'Rp. 195.000', image: img1 }
-];
+import { useNavigate } from 'react-router-dom';
 
 export default function BestSeller() {
   const scrollRef = useRef(null);
   const [showLeftButton, setShowLeftButton] = useState(false);
   const [showRightButton, setShowRightButton] = useState(true);
+  const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
+
+  // Fetch best-selling products from the API
+  useEffect(() => {
+    const fetchBestSellers = async () => {
+      try {
+        const response = await fetch('http://localhost:1337/api/products?populate=*&filters[isBestseller][$eq]=true');
+        const data = await response.json();
+        setProducts(data.data);
+      } catch (error) {
+        console.error("Error fetching bestsellers:", error);
+      }
+    };
+
+    fetchBestSellers();
+  }, []);
 
   const scroll = (scrollOffset) => {
     if (scrollRef.current) {
       scrollRef.current.scrollLeft += scrollOffset;
     }
+  };
+
+  const handleProductClick = (productId) => {
+    navigate(`/productDetails/${productId}`);
   };
 
   useEffect(() => {
@@ -54,7 +63,13 @@ export default function BestSeller() {
       <div className="relative">
         <div ref={scrollRef} className="flex overflow-x-auto space-x-4 scrollbar-hide scroll-smooth">
           {products.map((product) => (
-            <ProductCard key={product.id} name={product.name} price={product.price} image={product.image} />
+            <ProductCard
+              key={product.id}
+              name={product.name}
+              price={`$${product.price}`}
+              image={product.images[0]?.url} // Display first image if available
+              onClick={() => handleProductClick(product.documentId)} // Add click event
+            />
           ))}
         </div>
         {showLeftButton && (

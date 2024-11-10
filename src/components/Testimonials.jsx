@@ -30,7 +30,7 @@ const testimonials = [
     review: "This shirt is very pretty and nice. The color is cute too. At first I bought it as a present for my friend but I also wanted it so we ended up going out wearing twin clothes haha."
   },
   {
-    id: 1,
+    id: 4,
     productName: 'Essence Long Denim',
     image: testimonial2,
     rating: 5,
@@ -38,7 +38,7 @@ const testimonials = [
     review: "I like this pants. Its fit and perfect for me. The material is so comfortable that it can be used anywhere. It is also suitable to be combined with all types of my clothes."
   },
   {
-    id: 2,
+    id: 5,
     productName: 'Andcable Knit Top',
     image: testimonial1,
     rating: 5,
@@ -46,7 +46,7 @@ const testimonials = [
     review: "I like knitted materials. I bought this shirt because the design is very pretty and comfortable to wear casually. The material is also neat and good. I love shopping here and I'll be a frequent customer at this store."
   },
   {
-    id: 3,
+    id: 6,
     productName: 'Candy Stripe Boxy',
     image: testimonial3,
     rating: 5,
@@ -92,7 +92,7 @@ export default function Testimonials() {
     scrollRef.current.addEventListener('scroll', handleScroll);
     handleScroll(); // Check initial state
 
-    return () => scrollRef.current.removeEventListener('scroll', handleScroll);
+    return () => scrollRef.current?.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
