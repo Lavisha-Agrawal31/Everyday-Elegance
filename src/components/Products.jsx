@@ -99,6 +99,7 @@ const Products = () => {
           <option value="Dress">Dress</option>
           <option value="Jewellery">Jewellery</option>
           <option value="Cosmetics">Cosmetics</option>
+          <option value="Hair Flair">Hair Flair</option>
         </select>
 
         {/* Price range filter */}

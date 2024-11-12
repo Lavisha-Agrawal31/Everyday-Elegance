@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import ProductCard from './ProductCard'; // Import your ProductCard component
 import Loader from './Loader';
 
-const categories = ['Top', 'Bottom', 'Dress', 'Jewellery', 'Cosmetics'];
+const categories = ['Top', 'Bottom', 'Dress', 'Jewellery', 'Cosmetics' , 'Hair Flair'];
 
 export default function OurProducts() {
   const [activeCategory, setActiveCategory] = useState('Top');
