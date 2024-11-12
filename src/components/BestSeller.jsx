@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 export default function BestSeller() {
   const scrollRef = useRef(null);
   const [showLeftButton, setShowLeftButton] = useState(false);
-  const [showRightButton, setShowRightButton] = useState(true);
+  const [showRightButton, setShowRightButton] = useState(false); // Set to false initially
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
@@ -16,7 +16,17 @@ export default function BestSeller() {
       try {
         const response = await fetch('http://localhost:1337/api/products?populate=*&filters[isBestseller][$eq]=true');
         const data = await response.json();
-        setProducts(data.data);
+        
+        const productsData = data.data.map((item) => ({
+          id: item.documentId,
+          name: item.name,
+          price: item.price,
+          image: item.images[0]?.url 
+            ? item.images[0].url
+            : '/placeholder.svg', // fallback image
+        }));
+
+        setProducts(productsData);
       } catch (error) {
         console.error("Error fetching bestsellers:", error);
       }
@@ -47,6 +57,8 @@ export default function BestSeller() {
     const ref = scrollRef.current;
     if (ref) {
       ref.addEventListener('scroll', handleScroll);
+      
+      // Check the dimensions once after products have loaded
       handleScroll();
     }
 
@@ -55,7 +67,7 @@ export default function BestSeller() {
         ref.removeEventListener('scroll', handleScroll);
       }
     };
-  }, []);
+  }, [products]); // Trigger when products load
 
   return (
     <section className="container mx-auto px-12 py-8">
@@ -66,19 +78,25 @@ export default function BestSeller() {
             <ProductCard
               key={product.id}
               name={product.name}
-              price={`$${product.price}`}
-              image={product.images[0]?.url} // Display first image if available
-              onClick={() => handleProductClick(product.documentId)} // Add click event
+              price={`₹${product.price}`}
+              image={product.image}
+              onClick={() => handleProductClick(product.id)} 
             />
           ))}
         </div>
         {showLeftButton && (
-          <button onClick={() => scroll(-300)} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md">
+          <button
+            onClick={() => scroll(-300)}
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md"
+          >
             <ChevronLeft className="w-6 h-6" />
           </button>
         )}
         {showRightButton && (
-          <button onClick={() => scroll(300)} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md">
+          <button
+            onClick={() => scroll(300)}
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md"
+          >
             <ChevronRight className="w-6 h-6" />
           </button>
         )}

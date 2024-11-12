@@ -19,8 +19,17 @@ function Cart() {
   const shipping = 4;
   const total = subtotal + shipping;
 
+  // Check if all required fields are filled and if cart has items
+  const isFormValid = name && address && city && state && zip && country;
+  const isCartEmpty = cartItems.length === 0;
+
   // Handle checkout
   const handleCheckout = () => {
+    if (!isFormValid) {
+      alert("Please fill out all required fields.");
+      return;
+    }
+
     const orderDetails = {
       cartItems,
       subtotal,
@@ -80,7 +89,7 @@ function Cart() {
                     </button>
                   </div>
                   <div className="w-20 text-right">
-                    <div className="font-semibold">${item.price}</div>
+                    <div className="font-semibold">₹{item.price}</div>
                   </div>
                   <button
                     onClick={() => removeItem(item.id)}
@@ -103,6 +112,7 @@ function Cart() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                required
                 placeholder="Enter your full name"
                 className="mt-1 w-full rounded-md border-gray-300 bg-zinc-600 bg-opacity-50 p-2 placeholder-white"
               />
@@ -114,6 +124,7 @@ function Cart() {
                 type="text"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
+                required
                 placeholder="Enter your street address"
                 className="mt-1 w-full rounded-md border-gray-300 bg-zinc-600 bg-opacity-50 p-2 placeholder-white"
               />
@@ -127,6 +138,7 @@ function Cart() {
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="City"
+                  required
                   className="mt-1 w-full rounded-md border-gray-300 bg-zinc-600 bg-opacity-50 p-2 placeholder-white"
                 />
               </div>
@@ -136,6 +148,7 @@ function Cart() {
                   id="state"
                   value={state}
                   onChange={(e) => setState(e.target.value)}
+                  required
                   className="mt-1 w-full rounded-md border-gray-300 bg-zinc-700 p-2"
                 >
                   <option value="">Select state</option>
@@ -153,6 +166,7 @@ function Cart() {
                   type="text"
                   value={zip}
                   onChange={(e) => setZip(e.target.value)}
+                  required
                   placeholder="ZIP Code"
                   className="mt-1 w-full rounded-md border-gray-300 bg-zinc-600 bg-opacity-50 p-2 placeholder-white"
                 />
@@ -163,31 +177,34 @@ function Cart() {
                   id="country"
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
+                  required
                   className="mt-1 w-full rounded-md border-gray-300 bg-zinc-700 p-2"
                 >
                   <option value="">Select country</option>
                   <option value="in">India</option>
-                  {/* <option value="ca">Canada</option>
-                  <option value="mx">Mexico</option> */}
                 </select>
               </div>
             </div>
             <div className="mt-6 space-y-4">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span>${subtotal}</span>
+                <span>₹{subtotal}</span>
               </div>
               <div className="flex justify-between">
                 <span>Shipping</span>
-                <span>${shipping}</span>
+                <span>₹{shipping}</span>
               </div>
               <div className="flex justify-between text-lg font-semibold">
                 <span>Total (Tax incl.)</span>
-                <span>${total}</span>
+                <span>₹{total}</span>
               </div>
             </div>
-            <button onClick={handleCheckout} className="mt-6 w-full rounded-md bg-white p-2 text-gray-900 hover:bg-gray-300">
-              <span className="mr-2">${total}</span>
+            <button
+              onClick={handleCheckout}
+              className={`mt-6 w-full rounded-md p-2 text-gray-900 ${isFormValid && !isCartEmpty ? 'bg-white hover:bg-gray-300' : 'bg-gray-400 cursor-not-allowed'}`}
+              disabled={!isFormValid || isCartEmpty}
+            >
+              <span className="mr-2">₹{total}</span>
               <span>Checkout</span>
             </button>
           </div>
